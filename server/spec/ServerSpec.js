@@ -18,7 +18,6 @@ describe('Node Server Request Listener Function', function() {
     var res = new stubs.response();
 
     handler.requestHandler(req, res);
-
     expect(res._responseCode).to.equal(200);
     expect(res._ended).to.equal(true);
   });
@@ -59,7 +58,7 @@ describe('Node Server Request Listener Function', function() {
   it('Should accept posts to /classes/room', function() {
     var stubMsg = {
       username: 'Jono',
-      message: 'Do my bidding!'
+      text: 'Do my bidding!'
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
     var res = new stubs.response();
@@ -78,7 +77,7 @@ describe('Node Server Request Listener Function', function() {
   it('Should respond with messages that were previously posted', function() {
     var stubMsg = {
       username: 'Jono',
-      message: 'Do my bidding!'
+      text: 'Do my bidding!'
     };
     var req = new stubs.request('/classes/messages', 'POST', stubMsg);
     var res = new stubs.response();

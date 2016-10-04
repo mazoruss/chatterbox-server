@@ -1,1 +1,1 @@
-[{"name":"Jace"}]
+[{"username":"Guy","text":"This is a message","roomname":"lobby"},{"username":"Guy","text":"Jace is alright","roomname":"lobby"},{"username":"Guy","text":"After dinner message","roomname":"lobby"},{"username":"Guy","text":"This is awesome","roomname":"lobby"},{"username":"Guy","text":"A message with a date","roomname":"lobby","createdAt":"2016-10-04T03:12:24.501Z"}]

@@ -1,4 +1,3 @@
-
 var app = {
 
   //TODO: The current 'handleUsernameClick' function just toggles the class 'friend'
@@ -29,10 +28,10 @@ var app = {
     app.startSpinner();
     app.fetch(false);
 
-    // Poll for new messages
-    // setInterval(function() {
-    //   app.fetch(true);
-    // }, 3000);
+    //Poll for new messages
+    setInterval(function() {
+      app.fetch(true);
+    }, 3000);
   },
 
   send: function(message) {
@@ -61,7 +60,7 @@ var app = {
       url: app.server,
       type: 'GET',
       // data: { order: '-createdAt' },
-      contentType: 'text/plain',
+      contentType: 'application/json',
       success: function(data) {
         console.log('What the client recieves', data);
         // Don't bother if we have nothing to work with

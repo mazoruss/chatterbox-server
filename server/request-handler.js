@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 /*************************************************************
 
 You should implement your request handler function in this file.
@@ -24,7 +25,7 @@ var defaultCorsHeaders = {
 var requestHandler = function(request, response) {
   
   var headers = defaultCorsHeaders;
-  headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'application/json';
 
   var responseBody = {
     headers: headers,
@@ -39,26 +40,20 @@ var requestHandler = function(request, response) {
   var statusCode = 404;
 
   
-  if (request.url === '/classes/messages' && request.method === 'GET') {
+  if (request.url === '/classes/messages' && (request.method === 'GET' || request.method === 'OPTIONS')) {
     //===================================
     //============Get request============
     //===================================
     statusCode = 200;
+    response.writeHead(statusCode, headers);
 
     fs.readFile('messages.txt', (err, data) => {
-      response.writeHead(statusCode, headers);
       //Get the currently stored messages
+      console.log('_rc', response._responseCode);
       var messageData = JSON.parse(data);
-      console.log('messageData', messageData);
 
       responseBody.results = messageData;
-      response.write(JSON.stringify(responseBody));
-
-      response.end();
-
-
-
-
+      response.end(JSON.stringify(responseBody));
     });
 
 
@@ -78,25 +73,24 @@ var requestHandler = function(request, response) {
         //Get the currently stored messages
         var messageData;
         messageData = JSON.parse(data.toString());
+        var newMessage = JSON.parse(str);
+        newMessage.createdAt = new Date();
         
         //Add the new message to the messages array and write it to the file
-        messageData.push(JSON.parse(str));
+        messageData.push(newMessage);
         fs.writeFile('messages.txt', JSON.stringify(messageData), (err) => {
         });
+
+        response.writeHead(statusCode, headers);
+        response.end();
       });
 
     });
 
-  } else if (request.url === '/classes/messages' && request.method === 'OPTIONS') {
-    console.log('the request type was options');
+  } else {
+    response.writeHead(statusCode, headers);
+    response.end();
   }
-
-
-
-  // //Create / send the response
-  // 
-  // response.write(JSON.stringify(responseBody));
-  // response.end();
 
 };
 
