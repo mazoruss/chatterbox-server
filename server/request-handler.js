@@ -1,3 +1,4 @@
+var fs = require('fs');
 /*************************************************************
 
 You should implement your request handler function in this file.
@@ -21,16 +22,44 @@ var defaultCorsHeaders = {
 var requestHandler = function(request, response) {
 
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-  
+  var str = '';
   //Create the status codes
   var statusCode = 404;
   
   if (request.url === '/classes/messages' && request.method === 'GET') {
     statusCode = 200;
   } else if (request.url === '/classes/messages' && request.method === 'POST') {
+    //===================================
+    //===========Post request============
+    //===================================
     statusCode = 201;
+    //Get file and turn it into an array
+    request.on('data', function(data) {
+      str += data;
+    });
+    
+    request.on('end', function() {
+      fs.readFile('messages.txt', (err, data) => {
+        var messageData;
+        //Get existing messages
+        messageData = JSON.parse(data.toString());
+        //Read file and turn into object  
+        
+        console.log('before', messageData);
+        messageData.push(JSON.parse(str));
+        console.log(JSON.parse(str));
+        console.log('after', messageData);
+          
+        fs.writeFile('messages.txt', JSON.stringify(messageData), (err) => {
+        });
+      });
+        //Array push object
+        //Turn array back into file and save
+
+    });
+
   }
-  
+
   // Set up the headers and body
   var headers = defaultCorsHeaders;
 
@@ -52,4 +81,4 @@ var requestHandler = function(request, response) {
 };
 
 
-module.exports = requestHandler;
+exports.requestHandler = requestHandler;
