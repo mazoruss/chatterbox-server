@@ -23,6 +23,8 @@ var defaultCorsHeaders = {
 // Set up the headers and body
 
 var requestHandler = function(request, response) {
+
+  console.log(request.url);
   
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = 'application/json';
@@ -80,7 +82,7 @@ var requestHandler = function(request, response) {
         newMessage.createdAt = new Date();
         
         //Add the new message to the messages array and write it to the file
-        messageData.push(newMessage);
+        messageData.unshift(newMessage);
         fs.writeFile('messages.txt', JSON.stringify(messageData), (err) => {
         });
 
