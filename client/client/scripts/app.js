@@ -60,9 +60,10 @@ var app = {
     $.ajax({
       url: app.server,
       type: 'GET',
-      data: { order: '-createdAt' },
-      contentType: 'application/json',
+      // data: { order: '-createdAt' },
+      contentType: 'text/plain',
       success: function(data) {
+        console.log('What the client recieves', data);
         // Don't bother if we have nothing to work with
         if (!data.results || !data.results.length) { return; }
 
@@ -83,6 +84,7 @@ var app = {
           // Store the ID of the most recent message
           app.lastMessageId = mostRecentMessage.objectId;
         }
+
       },
       error: function(error) {
         console.error('chatterbox: Failed to fetch messages', error);

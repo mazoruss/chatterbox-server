@@ -19,50 +19,11 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
+// Set up the headers and body
+
 var requestHandler = function(request, response) {
-
-  console.log('Serving request type ' + request.method + ' for url ' + request.url);
-  var str = '';
-  //Create the status codes
-  var statusCode = 404;
   
-  if (request.url === '/classes/messages' && request.method === 'GET') {
-    statusCode = 200;
-  } else if (request.url === '/classes/messages' && request.method === 'POST') {
-    //===================================
-    //===========Post request============
-    //===================================
-    statusCode = 201;
-    //Get file and turn it into an array
-    request.on('data', function(data) {
-      str += data;
-    });
-    
-    request.on('end', function() {
-      fs.readFile('messages.txt', (err, data) => {
-        var messageData;
-        //Get existing messages
-        messageData = JSON.parse(data.toString());
-        //Read file and turn into object  
-        
-        console.log('before', messageData);
-        messageData.push(JSON.parse(str));
-        console.log(JSON.parse(str));
-        console.log('after', messageData);
-          
-        fs.writeFile('messages.txt', JSON.stringify(messageData), (err) => {
-        });
-      });
-        //Array push object
-        //Turn array back into file and save
-
-    });
-
-  }
-
-  // Set up the headers and body
   var headers = defaultCorsHeaders;
-
   headers['Content-Type'] = 'text/plain';
 
   var responseBody = {
@@ -72,11 +33,70 @@ var requestHandler = function(request, response) {
     results: []
   };
 
+  console.log('Serving request type ' + request.method + ' for url ' + request.url);
+  var str = '';
+  //Create the status codes
+  var statusCode = 404;
 
-  //Create / send the response
-  response.writeHead(statusCode, headers);
-  response.write(JSON.stringify(responseBody));
-  response.end();
+  
+  if (request.url === '/classes/messages' && request.method === 'GET') {
+    //===================================
+    //============Get request============
+    //===================================
+    statusCode = 200;
+
+    fs.readFile('messages.txt', (err, data) => {
+      response.writeHead(statusCode, headers);
+      //Get the currently stored messages
+      var messageData = JSON.parse(data);
+      console.log('messageData', messageData);
+
+      responseBody.results = messageData;
+      response.write(JSON.stringify(responseBody));
+
+      response.end();
+
+
+
+
+    });
+
+
+  } else if (request.url === '/classes/messages' && request.method === 'POST') {
+    //===================================
+    //===========Post request============
+    //===================================
+    statusCode = 201;
+    //Get request and turn it into a string
+    request.on('data', function(data) {
+      str += data;
+    });
+    
+    request.on('end', function() {
+      fs.readFile('messages.txt', (err, data) => {
+        
+        //Get the currently stored messages
+        var messageData;
+        messageData = JSON.parse(data.toString());
+        
+        //Add the new message to the messages array and write it to the file
+        messageData.push(JSON.parse(str));
+        fs.writeFile('messages.txt', JSON.stringify(messageData), (err) => {
+        });
+      });
+
+    });
+
+  } else if (request.url === '/classes/messages' && request.method === 'OPTIONS') {
+    console.log('the request type was options');
+  }
+
+
+
+  // //Create / send the response
+  // 
+  // response.write(JSON.stringify(responseBody));
+  // response.end();
 
 };
 
